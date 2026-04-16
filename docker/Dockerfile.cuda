@@ -1,0 +1,55 @@
+FROM nvidia/cuda:12.4.1-cudnn-runtime-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8 \
+    HF_HOME=/root/.cache/huggingface \
+    HF_HUB_ENABLE_HF_TRANSFER=1 \
+    PIP_NO_CACHE_DIR=1 \
+    LONGCAT_SRC=/opt/api/LongCat-AudioDiT \
+    PYTHONPATH=/opt/api/LongCat-AudioDiT
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        python3.10 \
+        python3.10-venv \
+        python3-pip \
+        git \
+        ffmpeg \
+        libsndfile1 \
+        ca-certificates \
+    && ln -sf /usr/bin/python3.10 /usr/local/bin/python \
+    && ln -sf /usr/bin/python3.10 /usr/local/bin/python3 \
+    && python -m pip install --upgrade pip \
+    && rm -rf /var/lib/apt/lists/*
+
+# CUDA 12.4 wheels pair with torch 2.5.1.
+RUN pip install --index-url https://download.pytorch.org/whl/cu124 \
+        torch==2.5.1 torchaudio==2.5.1
+
+WORKDIR /opt/api
+
+COPY LongCat-AudioDiT /opt/api/LongCat-AudioDiT
+# LongCat-AudioDiT has no pyproject.toml/setup.py; the package is loaded via
+# PYTHONPATH. Install its runtime deps directly (skipping torch/torchaudio
+# which were installed from the CUDA wheel index above).
+RUN pip install \
+        "transformers>=5.3.0" \
+        "safetensors>=0.4.0" \
+        "librosa>=0.10.0" \
+        "soundfile>=0.12.0" \
+        "numpy>=1.24.0" \
+        "einops>=0.8.0" \
+        hf_transfer
+
+COPY docker/requirements.api.txt /tmp/requirements.api.txt
+RUN pip install -r /tmp/requirements.api.txt
+
+COPY app /opt/api/app
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+EXPOSE 8000
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["uvicorn", "app.server:app", "--host", "0.0.0.0", "--port", "8000"]

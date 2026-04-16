@@ -1,0 +1,29 @@
+services:
+  longcat-cuda:
+    image: ghcr.io/seancheung/longcat-openai-tts-api:cuda-latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./voices:/voices:ro
+      - ./hf_cache:/root/.cache/huggingface
+    environment:
+      LONGCAT_MODEL: "meituan-longcat/LongCat-AudioDiT-1B"
+      LONGCAT_DEVICE: "cuda"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  longcat-cpu:
+    image: ghcr.io/seancheung/longcat-openai-tts-api:latest
+    ports:
+      - "8010:8000"
+    volumes:
+      - ./voices:/voices:ro
+      - ./hf_cache:/root/.cache/huggingface
+    environment:
+      LONGCAT_MODEL: "meituan-longcat/LongCat-AudioDiT-1B"
+      LONGCAT_DEVICE: "cpu"
