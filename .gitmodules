@@ -1,0 +1,3 @@
+[submodule "LongCat-AudioDiT"]
+	path = LongCat-AudioDiT
+	url = https://github.com/meituan-longcat/LongCat-AudioDiT.git
