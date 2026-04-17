@@ -20,8 +20,7 @@ env/
 .DS_Store
 
 hf_cache/
-voices/*
-!voices/.gitkeep
+voices/
 
 *.log
 out_*.mp3
