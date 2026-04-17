@@ -43,7 +43,7 @@ GPU (recommended):
 ```bash
 docker run --rm -p 8000:8000 --gpus all \
   -v $PWD/voices:/voices:ro \
-  -v $PWD/hf_cache:/root/.cache/huggingface \
+  -v $PWD/cache:/root/.cache \
   ghcr.io/seancheung/longcat-openai-tts-api:cuda-latest
 ```
 
@@ -52,11 +52,11 @@ CPU:
 ```bash
 docker run --rm -p 8000:8000 \
   -v $PWD/voices:/voices:ro \
-  -v $PWD/hf_cache:/root/.cache/huggingface \
+  -v $PWD/cache:/root/.cache \
   ghcr.io/seancheung/longcat-openai-tts-api:latest
 ```
 
-Model weights (≈4 GB for `LongCat-AudioDiT-1B`, ≈14 GB for the 3.5B variant) are pulled from HuggingFace on first start. Mounting `/root/.cache/huggingface` persists them across container restarts.
+Model weights (≈4 GB for `LongCat-AudioDiT-1B`, ≈14 GB for the 3.5B variant) are pulled from HuggingFace on first start. Mounting `/root/.cache` persists them across container restarts.
 
 > **GPU prerequisites**: NVIDIA driver + [nvidia-container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) on Linux. On Windows use Docker Desktop + WSL2 + NVIDIA Windows driver; no host CUDA toolkit required. The 1B model needs ≈6 GB VRAM.
 

@@ -43,7 +43,7 @@ GPU 版本（推荐）：
 ```bash
 docker run --rm -p 8000:8000 --gpus all \
   -v $PWD/voices:/voices:ro \
-  -v $PWD/hf_cache:/root/.cache/huggingface \
+  -v $PWD/cache:/root/.cache \
   ghcr.io/seancheung/longcat-openai-tts-api:cuda-latest
 ```
 
@@ -52,11 +52,11 @@ CPU 版本：
 ```bash
 docker run --rm -p 8000:8000 \
   -v $PWD/voices:/voices:ro \
-  -v $PWD/hf_cache:/root/.cache/huggingface \
+  -v $PWD/cache:/root/.cache \
   ghcr.io/seancheung/longcat-openai-tts-api:latest
 ```
 
-首次启动会从 HuggingFace 下载模型权重（`LongCat-AudioDiT-1B` 约 4 GB，`LongCat-AudioDiT-3.5B` 约 14 GB）。挂载 `/root/.cache/huggingface` 可让权重在容器重启后复用。
+首次启动会从 HuggingFace 下载模型权重（`LongCat-AudioDiT-1B` 约 4 GB，`LongCat-AudioDiT-3.5B` 约 14 GB）。挂载 `/root/.cache` 可让权重在容器重启后复用。
 
 > **GPU 要求**：宿主机需安装 NVIDIA 驱动与 [nvidia-container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)。Windows 需 Docker Desktop + WSL2 + NVIDIA Windows 驱动。1B 模型约需 6 GB 显存。
 

@@ -19,7 +19,7 @@ env/
 .vscode/
 .DS_Store
 
-hf_cache/
+cache/
 voices/
 
 *.log

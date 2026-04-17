@@ -5,7 +5,7 @@ services:
       - "8000:8000"
     volumes:
       - ./voices:/voices:ro
-      - ./hf_cache:/root/.cache/huggingface
+      - ./cache:/root/.cache
     environment:
       LONGCAT_MODEL: "meituan-longcat/LongCat-AudioDiT-1B"
       LONGCAT_DEVICE: "cuda"
@@ -23,7 +23,7 @@ services:
       - "8010:8000"
     volumes:
       - ./voices:/voices:ro
-      - ./hf_cache:/root/.cache/huggingface
+      - ./cache:/root/.cache
     environment:
       LONGCAT_MODEL: "meituan-longcat/LongCat-AudioDiT-1B"
       LONGCAT_DEVICE: "cpu"
